@@ -1,11 +1,13 @@
 package com.christian.application;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +29,26 @@ public class Flight {
 	@NotBlank(message="Select Destination")
 	private String destination;
 	private double price;
+	@OneToMany(mappedBy="flight")
+	private List<Reservation> reservations;
 	
+	
+	
+	public Flight(int flight_id, @NotBlank(message = "Must Select Airline") String airline,
+			@NotNull(message = "Select Departure Time") LocalTime departure_time,
+			@NotNull(message = "Select Arrival Time") LocalTime arrival_time,
+			@NotBlank(message = "Select Origin") String origin,
+			@NotBlank(message = "Select Destination") String destination, double price) {
+		super();
+		this.flight_id = flight_id;
+		this.airline = airline;
+		this.departure_time = departure_time;
+		this.arrival_time = arrival_time;
+		this.origin = origin;
+		this.destination = destination;
+		this.price = price;
+	}
+
 	public Flight() {
 		super();
 	}
@@ -86,5 +107,13 @@ public class Flight {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public List<Reservation> getReservations() {
+		return reservations;
+	}
+
+	public void setReservations(List<Reservation> reservations) {
+		this.reservations = reservations;
 	}
 }

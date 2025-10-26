@@ -22,6 +22,8 @@ public class Passenger {
 	private String city;
 	@NotBlank(message="Postal Code is mandatory")
 	private String postalcode;
+	@OneToOne(mappedBy="passenger")
+	private Reservation reservation;
 	
 	//Default Constructor
 	public Passenger() {

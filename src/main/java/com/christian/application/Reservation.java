@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
@@ -18,10 +20,9 @@ public class Reservation {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int reservation_id;
-	@OneToOne(mappedBy="passenger")
-	private int passenger_id;
-	@OneToOne(mappedBy="flight")
-	private int flight_id;
+	@ManyToOne
+	@JoinColumn(name = "flight_id")
+	private Flight flight;
 	@NotNull(message="Select Booking Date")
 	@Future
 	private LocalDate booking_date;
@@ -33,16 +34,18 @@ public class Reservation {
 	private int no_of_passengers;
 	private double total_price;
 	private String status;
+	@OneToOne(mappedBy="reservation")
+	private Passenger passenger;
 	
-	public Reservation(int reservation_id, int passenger_id, int flight_id,
+	public Reservation(int reservation_id, Passenger passenger, Flight flight,
 			@NotNull(message = "Select Booking Date") @Future LocalDate booking_date,
 			@NotNull(message = "Select Departure Date") @Future LocalDate departure_date,
 			@NotNull(message = "Enter Number of Passengers") @Size(max = 9) int no_of_passengers, double total_price,
 			String status) {
 		super();
 		this.reservation_id = reservation_id;
-		this.passenger_id = passenger_id;
-		this.flight_id = flight_id;
+		this.passenger = passenger;
+		this.flight = flight;
 		this.booking_date = booking_date;
 		this.departure_date = departure_date;
 		this.no_of_passengers = no_of_passengers;
@@ -62,19 +65,19 @@ public class Reservation {
 	}
 
 	public int getPassenger_id() {
-		return passenger_id;
+		return passenger.getPassenger_id();
 	}
 
 	public void setPassenger_id(int passenger_id) {
-		this.passenger_id = passenger_id;
+		this.passenger.setPassenger_id(passenger_id);;
 	}
 
-	public int getFlight_id() {
-		return flight_id;
+	public int getFlight() {
+		return this.flight.getFlight_id();
 	}
 
 	public void setFlight_id(int flight_id) {
-		this.flight_id = flight_id;
+		this.flight.setFlight_id(flight_id);
 	}
 
 	public LocalDate getBooking_date() {
