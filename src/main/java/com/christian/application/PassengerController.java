@@ -2,7 +2,10 @@ package com.christian.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -36,7 +39,7 @@ public class PassengerController {
 			return "reservation";
 		}
 		else {
-			return "signip";
+			return "signup";
 		}
 	}
 	
@@ -50,5 +53,44 @@ public class PassengerController {
 		else {
 			return "signin";
 		}
+	}
+	
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable int id, Model m) {
+		Passenger p = passRepository.findById(id).orElse(null);
+		m.addAttribute("passenger", p);
+		return "edit";
+	}
+	
+	@PostMapping("/update/{id}")
+	public String update(
+			@PathVariable int passenger_id,
+			@RequestParam String email,
+			@RequestParam String password,
+			@RequestParam String firstname,
+			@RequestParam String lastname,
+			@RequestParam String address,
+			@RequestParam String city,
+			@RequestParam String postalcode) {
+		Passenger p = passRepository.findById(passenger_id).orElse(null);
+		if(p != null) {
+			p.setEmail(email);
+			p.setPassword(password);
+			p.setFirstname(firstname);
+			p.setLastname(lastname);
+			p.setAddress(address);
+			p.setCity(city);
+			p.setPostalcode(postalcode);
+			
+			passRepository.save(p);
+		}
+		return "reservation";
+	}
+	
+	@GetMapping("/view/{id}")
+	public String view(@PathVariable int id, Model m) {
+		Passenger p = passRepository.findById(id).orElse(null);
+		m.addAttribute("passenger", p);
+		return "view";
 	}
 }
