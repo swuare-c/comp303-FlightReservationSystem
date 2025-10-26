@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 @Table(name="passenger")
 public class Passenger {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int passenger_id;
 	@NotBlank(message="Email is mandatory")
 	private String email;
@@ -24,7 +25,24 @@ public class Passenger {
 	
 	//Default Constructor
 	public Passenger() {
-		super();
+	}
+	
+	//Constructor with Parameters
+	public Passenger(int passenger_id, @NotBlank(message = "Email is mandatory") String email,
+			@NotBlank(message = "Password is mandatory") String password,
+			@NotBlank(message = "First Name is mandatory") String firstname,
+			@NotBlank(message = "Last Name is mandatory") String lastname,
+			@NotBlank(message = "Address is mandatory") String address,
+			@NotBlank(message = "City is mandatory") String city,
+			@NotBlank(message = "Postal Code is mandatory") String postalcode) {
+		this.passenger_id = passenger_id;
+		this.email = email;
+		this.password = password;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.address = address;
+		this.city = city;
+		this.postalcode = postalcode;
 	}
 
 	//Getters and Setters
