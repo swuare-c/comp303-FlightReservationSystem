@@ -53,7 +53,7 @@ public class ReservationController {
 		Reservation reservation = new Reservation(reservation_id, passenger, flight, booking_date, departure_date, no_of_passengers, total_price, status);
 		reservationRepository.save(reservation);
 		
-		return "reservationdetails";
+		return "checkout";
 	}
 	
 	//Update Reservation Details
@@ -91,5 +91,28 @@ public class ReservationController {
 		
 		m.addAttribute("reservation", r);
 		return "reservationdetails";
+	}
+	
+	@PostMapping("/checkout/{id}")
+	public String processPayment
+	(
+			@PathVariable int id,
+			@RequestParam String cardNumber,
+			@RequestParam String cardholderName,
+			@RequestParam LocalDate expiryDate,
+			@RequestParam String cvv,
+			@RequestParam String paymentMethod
+			) {
+		Reservation r = reservationRepository.findById(id).orElse(null);
+		r.setStatus("Booked");
+		reservationRepository.save(r);
+		return "paymentconfirmation";
+	}
+	
+	@GetMapping("/paymentconfirmation/{id}")
+	public String confirmation(@PathVariable int id, Model m) {
+		Reservation r = reservationRepository.findById(id).orElse(null);
+		m.addAttribute(r);
+		return "paymentconfirmation";
 	}
 }
