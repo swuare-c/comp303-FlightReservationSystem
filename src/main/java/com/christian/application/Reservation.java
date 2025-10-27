@@ -50,7 +50,7 @@ public class Reservation {
 		this.departure_date = departure_date;
 		this.no_of_passengers = no_of_passengers;
 		this.total_price = total_price;
-		this.status = status;
+		this.status = "booked";
 	}
 
 	public Reservation() {

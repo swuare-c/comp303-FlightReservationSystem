@@ -64,12 +64,31 @@ public class ReservationController {
 		return "reservationupdate";
 	}
 	
-	
-	
 	//View Reservation Details
 	@GetMapping("/reservationdetails/{id}")
 	public String view(@PathVariable int id, Model m) {
 		Reservation r = reservationRepository.findById(id).orElse(null);
+		m.addAttribute("reservation", r);
+		return "reservationdetails";
+	}
+	
+	//Cancel Reservation only if it's more than 10 days before
+	@GetMapping("/reservationdelete/{id}")
+	public String cancel(@PathVariable int id, Model m) {
+		Reservation r = reservationRepository.findById(id).orElse(null);
+		
+		LocalDate today = LocalDate.now();
+		LocalDate departureDate = r.getDeparture_date();
+		
+		if (today.isBefore(departureDate.minusDays(10))) {
+			r.setStatus("Cancelled");
+			reservationRepository.save(r);
+			m.addAttribute("message", "Reservation Cancelled");
+		}
+		else {
+			m.addAttribute("message", "Cannot Cancel Reservation within 10 days of departure");
+		}
+		
 		m.addAttribute("reservation", r);
 		return "reservationdetails";
 	}
