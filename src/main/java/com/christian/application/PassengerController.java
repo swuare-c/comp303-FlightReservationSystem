@@ -2,6 +2,7 @@ package com.christian.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +52,7 @@ public class PassengerController {
 			Passenger p = new Passenger(passenger_id, email, password, firstname, lastname, address, city, postalcode);
 			passRepository.save(p);
 			session.setAttribute("passenger", p);
-			return "reservation";
+			return "redirect:/reservation";
 		}
 		else {
 			return "signup";
@@ -64,23 +65,24 @@ public class PassengerController {
 		Passenger passenger = passRepository.findByEmailIgnoreCase(email);
 		if(passenger != null && passenger.getPassword().equals(password)) {
 			session.setAttribute("passenger", passenger);
-			return "reservation";
+			return "redirect:/reservation";
 		}
 		else {
 			return "signin";
 		}
 	}
 	
-	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable int id, HttpSession session) {
-		Passenger p = passRepository.findById(id).orElse(null);
-		session.setAttribute("passenger", p);
+	@GetMapping("/edit")
+	public String edit(Model m, HttpSession session) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		if(p != null)
+			return "redirect:/signin";
+		m.addAttribute("passenger", p);
 		return "edit";
 	}
 	
-	@PostMapping("/update/{id}")
+	@PostMapping("/update")
 	public String update(
-			@PathVariable("id") int passenger_id,
 			@RequestParam String email,
 			@RequestParam String password,
 			@RequestParam String firstname,
@@ -89,7 +91,7 @@ public class PassengerController {
 			@RequestParam String city,
 			@RequestParam String postalcode,
 			HttpSession session) {
-		Passenger p = passRepository.findById(passenger_id).orElse(null);
+		Passenger p = (Passenger) session.getAttribute("passenger");
 		if(p != null) {
 			p.setEmail(email);
 			p.setPassword(password);
@@ -102,13 +104,21 @@ public class PassengerController {
 			passRepository.save(p);
 			session.setAttribute("passenger", p);
 		}
-		return "reservation";
+		return "redirect:/reservation";
 	}
 	
-	@GetMapping("/view/{id}")
-	public String view(@PathVariable int id, HttpSession session) {
+	@GetMapping("/view")
+	public String view(Model m, HttpSession session) {
 		Passenger p = passRepository.findById(id).orElse(null);
-		session.setAttribute("passenger", p);
+		if(p != null)
+			return "redirect:/signin";
+		m.addAttribute("passenger", p);
 		return "view";
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/index";
 	}
 }
