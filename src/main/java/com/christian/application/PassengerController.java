@@ -19,9 +19,21 @@ public class PassengerController {
 		return "index";
 	}
 	
-	//Register user
+	//Sign Up Page
 	@GetMapping("/signup")
-	public String signUp
+	public String signup() {
+		return "signup";
+	}
+	
+	//Login Page
+	@GetMapping("/signin")
+	public String signin() {
+		return "signin";
+	}
+	
+	//Register user
+	@PostMapping("/register")
+	public String register
 	(
 			@RequestParam int passenger_id,
 			@RequestParam String email,
@@ -44,8 +56,8 @@ public class PassengerController {
 	}
 	
 	//Sign In
-	@GetMapping("/signin")
-	public String signIn(@RequestParam String email, @RequestParam String password) {
+	@GetMapping("/login")
+	public String login(@RequestParam String email, @RequestParam String password) {
 		Passenger passenger = passRepository.findByEmailIgnoreCase(email);
 		if(passenger != null && passenger.getPassword().equals(password)) {
 			return "reservation";

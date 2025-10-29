@@ -21,8 +21,10 @@ public class ReservationController {
 	private PassengerRepository passengerRepository;
 	
 	//Reservation Page
-	@GetMapping("/reservation")
-	public String reservation() {
+	@GetMapping("/reservation/{id}")
+	public String reservation(@PathVariable int id, Model m) {
+		Passenger p = passengerRepository.findById(id).orElse(null);
+		m.addAttribute(p);
 		return "reservation";
 	}
 	
@@ -30,8 +32,8 @@ public class ReservationController {
 	@PostMapping("/reservation/{id}")
 	public String bookReservation
 	(
-			@PathVariable int reservation_id,
-			@RequestParam int passenger_id,
+			@RequestParam int reservation_id,
+			@PathVariable int passenger_id,
 			@RequestParam int flight_id,
 			@RequestParam LocalDate booking_date,
 			@RequestParam LocalDate departure_date,
