@@ -2,11 +2,12 @@ package com.christian.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PassengerController {
@@ -43,13 +44,13 @@ public class PassengerController {
 			@RequestParam String address,
 			@RequestParam String city,
 			@RequestParam String postalcode,
-			Model m
+			HttpSession session
 			) {
 		//If email does not exist in database, Register user
 		if(!passRepository.existsByEmailIgnoreCase(email)) {
 			Passenger p = new Passenger(passenger_id, email, password, firstname, lastname, address, city, postalcode);
 			passRepository.save(p);
-			m.addAttribute("passenger", p);
+			session.setAttribute("passenger", p);
 			return "reservation";
 		}
 		else {
@@ -59,10 +60,10 @@ public class PassengerController {
 	
 	//Sign In
 	@GetMapping("/login")
-	public String login(@RequestParam String email, @RequestParam String password, Model m) {
+	public String login(@RequestParam String email, @RequestParam String password, HttpSession session) {
 		Passenger passenger = passRepository.findByEmailIgnoreCase(email);
 		if(passenger != null && passenger.getPassword().equals(password)) {
-			m.addAttribute("passenger", passenger);
+			session.setAttribute("passenger", passenger);
 			return "reservation";
 		}
 		else {
@@ -71,9 +72,9 @@ public class PassengerController {
 	}
 	
 	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable int id, Model m) {
+	public String edit(@PathVariable int id, HttpSession session) {
 		Passenger p = passRepository.findById(id).orElse(null);
-		m.addAttribute("passenger", p);
+		session.setAttribute("passenger", p);
 		return "edit";
 	}
 	
@@ -87,7 +88,7 @@ public class PassengerController {
 			@RequestParam String address,
 			@RequestParam String city,
 			@RequestParam String postalcode,
-			Model m) {
+			HttpSession session) {
 		Passenger p = passRepository.findById(passenger_id).orElse(null);
 		if(p != null) {
 			p.setEmail(email);
@@ -99,15 +100,15 @@ public class PassengerController {
 			p.setPostalcode(postalcode);
 			
 			passRepository.save(p);
-			m.addAttribute("passenger", p);
+			session.setAttribute("passenger", p);
 		}
 		return "reservation";
 	}
 	
 	@GetMapping("/view/{id}")
-	public String view(@PathVariable int id, Model m) {
+	public String view(@PathVariable int id, HttpSession session) {
 		Passenger p = passRepository.findById(id).orElse(null);
-		m.addAttribute("passenger", p);
+		session.setAttribute("passenger", p);
 		return "view";
 	}
 }
