@@ -24,7 +24,7 @@ public class ReservationController {
 	@GetMapping("/reservation/{id}")
 	public String reservation(@PathVariable int id, Model m) {
 		Passenger p = passengerRepository.findById(id).orElse(null);
-		m.addAttribute(p);
+		m.addAttribute("passenger", p);
 		return "reservation";
 	}
 	
@@ -33,7 +33,7 @@ public class ReservationController {
 	public String bookReservation
 	(
 			@RequestParam int reservation_id,
-			@PathVariable int passenger_id,
+			@PathVariable("id") int passenger_id,
 			@RequestParam int flight_id,
 			@RequestParam LocalDate booking_date,
 			@RequestParam LocalDate departure_date,
@@ -45,15 +45,22 @@ public class ReservationController {
 			@RequestParam LocalTime arrival_time,
 			@RequestParam String origin,
 			@RequestParam String destination,
-			@RequestParam double price
+			@RequestParam double price,
+			Model m
 			) {
-		Flight flight = new Flight(flight_id, airline_name, departure_time, arrival_time, origin, destination, price);
-		flightRepository.save(flight);
+		Flight flight = flightRepository.findById(flight_id)
+				.orElseGet(() -> flightRepository.save(
+						new Flight(flight_id, airline_name, departure_time, arrival_time, origin, destination, price))
+						);
 		
 		Passenger passenger = passengerRepository.findById(passenger_id).orElse(null);
 		
 		Reservation reservation = new Reservation(reservation_id, passenger, flight, booking_date, departure_date, no_of_passengers, total_price, status);
+		flightRepository.save(flight);
 		reservationRepository.save(reservation);
+		m.addAttribute("reservation",reservation);
+		m.addAttribute("flight", flight);
+		m.addAttribute("passenger", passenger);
 		
 		return "checkout";
 	}
@@ -64,6 +71,43 @@ public class ReservationController {
 		Reservation r = reservationRepository.findById(id).orElse(null);
 		m.addAttribute("reservation", r);
 		return "reservationupdate";
+	}
+	
+	@PostMapping("/reservationupdate/{id}")
+	public String edit(@PathVariable("id") int reservation_id,
+			@RequestParam int passenger_id,
+			@RequestParam int flight_id,
+			@RequestParam LocalDate booking_date,
+			@RequestParam LocalDate departure_date,
+			@RequestParam int no_of_passengers,
+			@RequestParam double total_price,
+			@RequestParam String status,
+			@RequestParam String airline_name,
+			@RequestParam LocalTime departure_time,
+			@RequestParam LocalTime arrival_time,
+			@RequestParam String origin,
+			@RequestParam String destination,
+			@RequestParam double price,
+			Model m) {
+		Reservation r = reservationRepository.findById(reservation_id).orElse(null);
+		if(r != null) {
+			Flight f = flightRepository.findById(r.getFlight()).orElse(null);
+			r.setBooking_date(booking_date);
+			r.setDeparture_date(departure_date);
+			r.setNo_of_passengers(no_of_passengers);
+			f.setArrival_time(arrival_time);
+			f.setDeparture_time(departure_time);
+			
+			reservationRepository.save(r);
+			flightRepository.save(f);
+			m.addAttribute("reservation", r);
+			m.addAttribute("flight", f);
+			
+			return "reservation";
+		}
+		else
+			return "reservationupdate";
+		
 	}
 	
 	//View Reservation Details
@@ -114,7 +158,7 @@ public class ReservationController {
 	@GetMapping("/paymentconfirmation/{id}")
 	public String confirmation(@PathVariable int id, Model m) {
 		Reservation r = reservationRepository.findById(id).orElse(null);
-		m.addAttribute(r);
+		m.addAttribute("reservation", r);
 		return "paymentconfirmation";
 	}
 }
