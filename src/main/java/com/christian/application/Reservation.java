@@ -119,4 +119,16 @@ public class Reservation {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public Passenger getPassenger() {
+		return passenger;
+	}
+
+	public void setPassenger(Passenger passenger) {
+		this.passenger = passenger;
+	}
+
+	public void setFlight(Flight flight) {
+		this.flight = flight;
+	}
 }

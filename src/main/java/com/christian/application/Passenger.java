@@ -111,6 +111,14 @@ public class Passenger {
 	public void setPostalcode(String postalcode) {
 		this.postalcode = postalcode;
 	}
+
+	public Reservation getReservation() {
+		return reservation;
+	}
+
+	public void setReservation(Reservation reservation) {
+		this.reservation = reservation;
+	}
 	
 	
 	

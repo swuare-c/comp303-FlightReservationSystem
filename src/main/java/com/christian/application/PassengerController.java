@@ -75,7 +75,7 @@ public class PassengerController {
 	@GetMapping("/edit")
 	public String edit(Model m, HttpSession session) {
 		Passenger p = (Passenger) session.getAttribute("passenger");
-		if(p != null)
+		if(p == null)
 			return "redirect:/signin";
 		m.addAttribute("passenger", p);
 		return "edit";
@@ -109,8 +109,8 @@ public class PassengerController {
 	
 	@GetMapping("/view")
 	public String view(Model m, HttpSession session) {
-		Passenger p = passRepository.findById(id).orElse(null);
-		if(p != null)
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		if(p == null)
 			return "redirect:/signin";
 		m.addAttribute("passenger", p);
 		return "view";

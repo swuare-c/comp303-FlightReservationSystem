@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class ReservationController {
 	@Autowired
@@ -21,19 +23,22 @@ public class ReservationController {
 	private PassengerRepository passengerRepository;
 	
 	//Reservation Page
-	@GetMapping("/reservation/{id}")
-	public String reservation(@PathVariable int id, Model m) {
-		Passenger p = passengerRepository.findById(id).orElse(null);
+	@GetMapping("/reservation")
+	public String reservation(HttpSession session, Model m) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		
+		if(p == null)
+			return "redirect:/signin";
+		
 		m.addAttribute("passenger", p);
 		return "reservation";
 	}
 	
 	//Creating a Reservation
-	@PostMapping("/reservation/{id}")
+	@PostMapping("/reservation")
 	public String bookReservation
 	(
 			@RequestParam int reservation_id,
-			@PathVariable("id") int passenger_id,
 			@RequestParam int flight_id,
 			@RequestParam LocalDate booking_date,
 			@RequestParam LocalDate departure_date,
@@ -46,64 +51,59 @@ public class ReservationController {
 			@RequestParam String origin,
 			@RequestParam String destination,
 			@RequestParam double price,
-			Model m
+			Model m,
+			HttpSession session
 			) {
-		Flight flight = flightRepository.findById(flight_id)
-				.orElseGet(() -> flightRepository.save(
-						new Flight(flight_id, airline_name, departure_time, arrival_time, origin, destination, price))
-						);
+		Flight flight = flightRepository.findById(flight_id).orElse(null);
 		
-		Passenger passenger = passengerRepository.findById(passenger_id).orElse(null);
+		Passenger passenger = (Passenger) session.getAttribute("passenger");
 		
 		Reservation reservation = new Reservation(reservation_id, passenger, flight, booking_date, departure_date, no_of_passengers, total_price, status);
-		flightRepository.save(flight);
+		passenger.setReservation(reservation);
 		reservationRepository.save(reservation);
+		passengerRepository.save(passenger);
+		
 		m.addAttribute("reservation",reservation);
 		m.addAttribute("flight", flight);
 		m.addAttribute("passenger", passenger);
 		
-		return "checkout";
+		return "redirect:/checkout";
 	}
 	
-	//Update Reservation Details
-	@GetMapping("/reservationupdate/{id}")
-	public String update(@PathVariable int id, Model m) {
-		Reservation r = reservationRepository.findById(id).orElse(null);
+	//Update Reservation Page
+	@GetMapping("/reservationupdate")
+	public String update(HttpSession session, Model m) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		if(p == null)
+			return "redirect:/signin";
+		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
 		m.addAttribute("reservation", r);
 		return "reservationupdate";
 	}
 	
-	@PostMapping("/reservationupdate/{id}")
-	public String edit(@PathVariable("id") int reservation_id,
-			@RequestParam int passenger_id,
-			@RequestParam int flight_id,
+	//Update Reservation Details
+	@PostMapping("/reservationupdate")
+	public String edit(@RequestParam int reservation_id,
 			@RequestParam LocalDate booking_date,
 			@RequestParam LocalDate departure_date,
 			@RequestParam int no_of_passengers,
 			@RequestParam double total_price,
-			@RequestParam String status,
-			@RequestParam String airline_name,
-			@RequestParam LocalTime departure_time,
-			@RequestParam LocalTime arrival_time,
-			@RequestParam String origin,
-			@RequestParam String destination,
-			@RequestParam double price,
-			Model m) {
+			Model m,
+			HttpSession session) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		
 		Reservation r = reservationRepository.findById(reservation_id).orElse(null);
-		if(r != null) {
+		if(r != null && r.getPassenger().getPassenger_id() == p.getPassenger_id()) {
 			Flight f = flightRepository.findById(r.getFlight()).orElse(null);
 			r.setBooking_date(booking_date);
 			r.setDeparture_date(departure_date);
 			r.setNo_of_passengers(no_of_passengers);
-			f.setArrival_time(arrival_time);
-			f.setDeparture_time(departure_time);
 			
 			reservationRepository.save(r);
-			flightRepository.save(f);
 			m.addAttribute("reservation", r);
 			m.addAttribute("flight", f);
 			
-			return "reservation";
+			return "redirect:/reservation";
 		}
 		else
 			return "reservationupdate";
@@ -111,17 +111,25 @@ public class ReservationController {
 	}
 	
 	//View Reservation Details
-	@GetMapping("/reservationdetails/{id}")
-	public String view(@PathVariable int id, Model m) {
-		Reservation r = reservationRepository.findById(id).orElse(null);
+	@GetMapping("/reservationdetails")
+	public String view(HttpSession session, Model m) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		if(p == null)
+			return "redirect:/signin";
+		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
+		
 		m.addAttribute("reservation", r);
 		return "reservationdetails";
 	}
 	
 	//Cancel Reservation only if it's more than 10 days before
-	@GetMapping("/reservationdelete/{id}")
-	public String cancel(@PathVariable int id, Model m) {
-		Reservation r = reservationRepository.findById(id).orElse(null);
+	@GetMapping("/reservationdelete")
+	public String cancel(HttpSession session, Model m) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		if(p == null)
+			return "redirect:/signin";
+		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
+		
 		
 		LocalDate today = LocalDate.now();
 		LocalDate departureDate = r.getDeparture_date();
@@ -139,25 +147,33 @@ public class ReservationController {
 		return "reservationdetails";
 	}
 	
-	@PostMapping("/checkout/{id}")
+	@PostMapping("/checkout")
 	public String processPayment
 	(
-			@PathVariable int id,
 			@RequestParam String cardNumber,
 			@RequestParam String cardholderName,
 			@RequestParam LocalDate expiryDate,
 			@RequestParam String cvv,
-			@RequestParam String paymentMethod
+			@RequestParam String paymentMethod,
+			Model m,
+			HttpSession session
 			) {
-		Reservation r = reservationRepository.findById(id).orElse(null);
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		if(p == null)
+			return "redirect:/signin";
+		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
 		r.setStatus("Booked");
 		reservationRepository.save(r);
-		return "paymentconfirmation";
+		return "redirect:/paymentconfirmation";
 	}
 	
-	@GetMapping("/paymentconfirmation/{id}")
-	public String confirmation(@PathVariable int id, Model m) {
-		Reservation r = reservationRepository.findById(id).orElse(null);
+	@GetMapping("/checkout")
+	public String confirmation(HttpSession session, Model m) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		if(p == null)
+			return "redirect:/signin";
+		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
+
 		m.addAttribute("reservation", r);
 		return "paymentconfirmation";
 	}
