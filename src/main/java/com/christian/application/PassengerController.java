@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,38 +19,29 @@ public class PassengerController {
 	//Home page
 	@GetMapping("/index")
 	public String home() {
-		return "index";
+		return "Index";
 	}
 	
 	//Sign Up Page
 	@GetMapping("/signup")
-	public String signup() {
+	public String signup(Model m) {
+		m.addAttribute("passenger", new Passenger());
 		return "signup";
 	}
 	
 	//Login Page
 	@GetMapping("/signin")
-	public String signin() {
+	public String signin(Model m) {
+		m.addAttribute("passenger", new Passenger());
 		return "signin";
 	}
 	
 	//Register user
 	@PostMapping("/register")
 	public String register
-	(
-			@RequestParam int passenger_id,
-			@RequestParam String email,
-			@RequestParam String password,
-			@RequestParam String firstname,
-			@RequestParam String lastname,
-			@RequestParam String address,
-			@RequestParam String city,
-			@RequestParam String postalcode,
-			HttpSession session
-			) {
+	(@ModelAttribute Passenger p, HttpSession session) {
 		//If email does not exist in database, Register user
-		if(!passRepository.existsByEmailIgnoreCase(email)) {
-			Passenger p = new Passenger(passenger_id, email, password, firstname, lastname, address, city, postalcode);
+		if(!passRepository.existsByEmailIgnoreCase(p.getEmail())) {
 			passRepository.save(p);
 			session.setAttribute("passenger", p);
 			return "redirect:/reservation";
@@ -82,24 +74,16 @@ public class PassengerController {
 	}
 	
 	@PostMapping("/update")
-	public String update(
-			@RequestParam String email,
-			@RequestParam String password,
-			@RequestParam String firstname,
-			@RequestParam String lastname,
-			@RequestParam String address,
-			@RequestParam String city,
-			@RequestParam String postalcode,
-			HttpSession session) {
+	public String update(@ModelAttribute Passenger pass, HttpSession session) {
 		Passenger p = (Passenger) session.getAttribute("passenger");
 		if(p != null) {
-			p.setEmail(email);
-			p.setPassword(password);
-			p.setFirstname(firstname);
-			p.setLastname(lastname);
-			p.setAddress(address);
-			p.setCity(city);
-			p.setPostalcode(postalcode);
+			p.setEmail(pass.getEmail());
+			p.setPassword(pass.getPassword());
+			p.setFirstname(pass.getFirstname());
+			p.setLastname(pass.getLastname());
+			p.setAddress(pass.getAddress());
+			p.setCity(pass.getCity());
+			p.setPostalcode(pass.getPostalcode());
 			
 			passRepository.save(p);
 			session.setAttribute("passenger", p);
