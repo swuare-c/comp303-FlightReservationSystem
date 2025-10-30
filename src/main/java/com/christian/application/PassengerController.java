@@ -31,8 +31,7 @@ public class PassengerController {
 	
 	//Login Page
 	@GetMapping("/signin")
-	public String signin(Model m) {
-		m.addAttribute("passenger", new Passenger());
+	public String signin() {
 		return "signin";
 	}
 	

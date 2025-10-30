@@ -34,7 +34,8 @@ public class Reservation {
 	private int no_of_passengers;
 	private double total_price;
 	private String status;
-	@OneToOne(mappedBy="reservation")
+	@OneToOne
+	@JoinColumn(name = "passenger_id")
 	private Passenger passenger;
 	
 	public Reservation(int reservation_id, Passenger passenger, Flight flight,
