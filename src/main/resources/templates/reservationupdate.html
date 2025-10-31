@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Reservation</title>
+</head>
+<body>
+<h2>Update Reservation</h2>
+
+<form th:action="@{/reservationupdate}" method="post">
+    <input type="hidden" th:name="reservation_id" th:value="${reservation.reservation_id}"/>
+
+    <label for="booking_date">Booking Date:</label>
+    <input type="date" th:name="booking_date" th:value="${reservation.booking_date}" required><br><br>
+
+    <label for="departure_date">Departure Date:</label>
+    <input type="date" th:name="departure_date" th:value="${reservation.departure_date}" required><br><br>
+
+    <label for="no_of_passengers">Number of Passengers:</label>
+    <input type="number" th:name="no_of_passengers" th:value="${reservation.no_of_passengers}" min="1" required><br><br>
+
+    <button type="submit">Update Reservation</button>
+</form>
+
+<br>
+<a th:href="@{/reservationdetails}"><button>Reservation</button></a>
+<a th:href="@{/index}"><button>Home</button></a>
+
+</body>
+</html>

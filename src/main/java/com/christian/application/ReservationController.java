@@ -141,7 +141,9 @@ public class ReservationController {
 		if(p == null)
 			return "redirect:/signin";
 		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
+		Flight f = r.getActualFlight();
 		
+		m.addAttribute("flight", f);
 		m.addAttribute("reservation", r);
 		return "reservationdetails";
 	}
@@ -167,8 +169,9 @@ public class ReservationController {
 			m.addAttribute("message", "Cannot Cancel Reservation within 10 days of departure");
 		}
 		
+		m.addAttribute("passenger", p);
 		m.addAttribute("reservation", r);
-		return "reservationdetails";
+		return "home";
 	}
 	
 	@PostMapping("/checkout")

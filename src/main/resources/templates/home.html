@@ -13,6 +13,9 @@
 </div>
 
 <div th:if="${passenger != null}">
+<div th:if="${message}" style="color: red;">
+    <p th:text="${message}"></p>
+</div>
     <p>
         <a th:href="@{/logout}"><button>Logout</button></a>
         <a th:href="@{/reservation}"><button>Book Reservation</button></a>

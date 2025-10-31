@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservation Details</title>
+</head>
+<body>
+<h2>Reservation Details</h2>
+
+<div th:if="${reservation != null}">
+    <p><strong>Flight:</strong> <span th:text="${flight.airline} + ' - ' + ${flight.origin} + ' to ' + ${flight.destination}"></span></p>
+    <p><strong>Departure Date:</strong> <span th:text="${reservation.departure_date}"></span></p>
+    <p><strong>Booking Date:</strong> <span th:text="${reservation.booking_date}"></span></p>
+    <p><strong>Number of Passengers:</strong> <span th:text="${reservation.no_of_passengers}"></span></p>
+    <p><strong>Total Price:</strong> $<span th:text="${reservation.total_price}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${reservation.status}"></span></p>
+
+    <a th:href="@{/reservationupdate}"><button>Edit Reservation</button></a>
+    <a th:href="@{/reservationdelete}"><button>Cancel Reservation</button></a>
+</div>
+
+<a th:href="@{/index}"><button>Home</button></a>
+
+</body>
+</html>
