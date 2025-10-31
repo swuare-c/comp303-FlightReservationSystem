@@ -72,9 +72,11 @@ public class ReservationController {
 	        flight.setDeparture_time(LocalTime.parse(departureTime));
 	        flight.setArrival_time(LocalTime.parse(arrivalTime));
 	        flight.setPrice(no_of_passengers * 150);
+	        
+	        Passenger passenger = passengerRepository.findById(p.getPassenger_id()).orElse(null);
 
 	        Reservation reservation = new Reservation();
-	        reservation.setPassenger(p);
+	        reservation.setPassenger(passenger);
 	        reservation.setFlight(flight);
 	        reservation.setBooking_date(LocalDate.now());
 	        reservation.setDeparture_date(LocalDate.parse(departureDate));
