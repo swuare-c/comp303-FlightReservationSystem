@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Profile</title>
+</head>
+<body>
+<h2>My Profile</h2>
+
+<div>
+    <p><strong>First Name:</strong> <span th:text="${passenger.firstname}"></span></p>
+    <p><strong>Last Name:</strong> <span th:text="${passenger.lastname}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${passenger.email}"></span></p>
+    <p><strong>Address:</strong> <span th:text="${passenger.address}"></span></p>
+    <p><strong>City:</strong> <span th:text="${passenger.city}"></span></p>
+    <p><strong>Postal Code:</strong> <span th:text="${passenger.postalcode}"></span></p>
+</div>
+
+<p>
+    <a th:href="@{/edit}">Edit</a> |
+    <a th:href="@{/home}">Home</a>
+</p>
+</body>
+</html>

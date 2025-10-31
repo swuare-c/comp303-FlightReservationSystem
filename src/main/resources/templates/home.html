@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<h2>Welcome, <span th:text="${passenger != null} ? ${passenger.firstname} : 'Guest'"></span>!</h2>
+
+<!-- Just in case -->
+<div th:if="${passenger == null}">
+    <p><a th:href="@{/signin}">Login</a> or <a th:href="@{/signup}">Sign Up</a> to get started.</p>
+</div>
+
+<div th:if="${passenger != null}">
+    <p>
+        <a th:href="@{/logout}"><button>Logout</button></a>
+        <a th:href="@{/reservation}"><button>Book Reservation</button></a>
+        <a th:href="@{/view}"><button>View Profile</button></a>
+        <span th:if="${passenger.reservation != null}">
+            <a th:href="@{/reservationdetails}"><button>View Reservation</button></a>
+        </span>
+    </p>
+</div>
+
+</body>
+</html>

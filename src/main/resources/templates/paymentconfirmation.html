@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Payment Confirmation</title>
+</head>
+<body>
+<div>
+        <h2>Payment Successful!</h2>
+        <p>Your reservation has been confirmed. Here are the details:</p>
+
+        <h3>Reservation Details</h3>
+        <table>
+            <tr>
+                <th>Reservation ID</th>
+                <td th:text="${reservation.reservation_id}"></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td th:text="${reservation.status}"></td>
+            </tr>
+            <tr>
+                <th>Booking Date</th>
+                <td th:text="${reservation.booking_date}"></td>
+            </tr>
+            <tr>
+                <th>Departure Date</th>
+                <td th:text="${reservation.departure_date}"></td>
+            </tr>
+            <tr>
+                <th>Passengers</th>
+                <td th:text="${reservation.no_of_passengers}"></td>
+            </tr>
+            <tr>
+                <th>Total Price</th>
+                <td th:text="${reservation.total_price}"></td>
+            </tr>
+        </table>
+
+        <h3>Flight Details</h3>
+        <table>
+            <tr>
+                <th>Airline</th>
+                <td th:text="${flight.airline}"></td>
+            </tr>
+            <tr>
+                <th>Origin</th>
+                <td th:text="${flight.origin}"></td>
+            </tr>
+            <tr>
+                <th>Destination</th>
+                <td th:text="${flight.destination}"></td>
+            </tr>
+            <tr>
+                <th>Departure Time</th>
+                <td th:text="${flight.departure_time}"></td>
+            </tr>
+            <tr>
+                <th>Arrival Time</th>
+                <td th:text="${flight.arrival_time}"></td>
+            </tr>
+        </table>
+
+        <a th:href="@{/home}">Home</a>
+    </div>
+</body>
+</html>

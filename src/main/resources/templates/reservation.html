@@ -8,7 +8,10 @@
 <div>
     <h2>Book Flight</h2>
 
-    <!-- Step 1: Select Airline -->
+<div th:if="${error}" style="color: red;">
+    <p th:text="${error}"></p>
+</div>
+
     <form th:action="@{/reservation}" method="get">
         <label>Select Airline:</label>
         <select name="airline">
@@ -22,13 +25,11 @@
         <button type="submit">Continue</button>
     </form>
 
-    <!-- Step 2: Flight + Reservation Form -->
     <div th:if="${param.airline}">
         <form th:action="@{/reservation}" method="post">
 
             <h3>Enter Flight and Reservation Details</h3>
 
-            <!-- Flight Fields -->
             <label>Airline:</label>
             <input type="text" name="airline" th:value="${param.airline}" readonly>
 

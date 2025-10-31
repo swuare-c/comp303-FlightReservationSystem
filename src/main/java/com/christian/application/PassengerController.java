@@ -44,7 +44,8 @@ public class PassengerController {
 		if(!passRepository.existsByEmailIgnoreCase(p.getEmail())) {
 			passRepository.save(p);
 			session.setAttribute("passenger", p);
-			return "redirect:/reservation";
+			m.addAttribute("passenger", p);
+			return "redirect:/home";
 		}
 		else if(passRepository.existsByEmailIgnoreCase(p.getEmail())) {
 			m.addAttribute("error", "Account exists with email");
@@ -62,7 +63,8 @@ public class PassengerController {
 		Passenger passenger = passRepository.findByEmailIgnoreCase(email);
 		if(passenger != null && passenger.getPassword().equals(password)) {
 			session.setAttribute("passenger", passenger);
-			return "reservation";
+			m.addAttribute("passenger", passenger);
+			return "home";
 		}
 		else {
 			m.addAttribute("error", "Invalid email or password");
@@ -94,7 +96,7 @@ public class PassengerController {
 			passRepository.save(p);
 			session.setAttribute("passenger", p);
 		}
-		return "redirect:/reservation";
+		return "redirect:/home";
 	}
 	
 	@GetMapping("/view")
