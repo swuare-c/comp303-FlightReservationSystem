@@ -110,7 +110,6 @@ public class ReservationController {
 			@RequestParam LocalDate booking_date,
 			@RequestParam LocalDate departure_date,
 			@RequestParam int no_of_passengers,
-			@RequestParam double total_price,
 			Model m,
 			HttpSession session) {
 		Passenger p = (Passenger) session.getAttribute("passenger");
@@ -127,7 +126,7 @@ public class ReservationController {
 			m.addAttribute("reservation", r);
 			m.addAttribute("flight", f);
 			
-			return "redirect:/reservation";
+			return "redirect:/home";
 		}
 		else
 			return "reservationupdate";

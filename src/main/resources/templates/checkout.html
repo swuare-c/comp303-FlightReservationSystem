@@ -21,7 +21,7 @@
 <span th:text="${reservation.total_price}"></span>
 </p>
 
-<form th:action="@{/paymentconfirmation}" method="post">
+<form th:action="@{/checkout}" method="post">
 
 <label>Payment Method:</label>
         <select name="paymentMethod" required>
