@@ -8,6 +8,10 @@
 <div>
 <h2>Create an Account</h2>
 
+<div th:if="${error}" style="color: red;">
+    <p th:text="${error}"></p>
+</div>
+
 <form th:action="@{/register}" th:object="${passenger}" method="post">
 <input type="hidden" th:field="*{passenger_id}">
 

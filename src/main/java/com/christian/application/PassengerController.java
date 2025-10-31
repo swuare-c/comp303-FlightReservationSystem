@@ -31,34 +31,41 @@ public class PassengerController {
 	
 	//Login Page
 	@GetMapping("/signin")
-	public String signin() {
+	public String signin(Model m) {
+		m.addAttribute("passenger", new Passenger());
 		return "signin";
 	}
 	
 	//Register user
 	@PostMapping("/register")
 	public String register
-	(@ModelAttribute Passenger p, HttpSession session) {
+	(@ModelAttribute Passenger p, HttpSession session, Model m) {
 		//If email does not exist in database, Register user
 		if(!passRepository.existsByEmailIgnoreCase(p.getEmail())) {
 			passRepository.save(p);
 			session.setAttribute("passenger", p);
 			return "redirect:/reservation";
 		}
+		else if(passRepository.existsByEmailIgnoreCase(p.getEmail())) {
+			m.addAttribute("error", "Account exists with email");
+			return "signup";
+		}
 		else {
+			m.addAttribute("error", "Error registering Account");
 			return "signup";
 		}
 	}
 	
 	//Sign In
 	@PostMapping("/login")
-	public String login(@RequestParam String email, @RequestParam String password, HttpSession session) {
+	public String login(@RequestParam String email, @RequestParam String password, HttpSession session, Model m) {
 		Passenger passenger = passRepository.findByEmailIgnoreCase(email);
 		if(passenger != null && passenger.getPassword().equals(password)) {
 			session.setAttribute("passenger", passenger);
 			return "reservation";
 		}
 		else {
+			m.addAttribute("error", "Invalid email or password");
 			return "signin";
 		}
 	}
