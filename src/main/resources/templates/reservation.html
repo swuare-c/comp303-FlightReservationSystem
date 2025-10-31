@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Book Flight</title>
+</head>
+<body>
+<div>
+<h2>Book Flight</h2>
+<form th:action="@{/reservation}" method="get">
+<label>Select Airline:</label>
+<select name="airline">
+<option th:each="airline : ${airlines}"
+		th:value="${airline}"
+		th:text="${airline}"
+		th:selected="${airline == param.airline}">
+		</option>
+</select>
+<button type="submit">Show Flights</button>
+</form>
+
+<div th:if="${flights}">
+<form th:action="@{/reservation}" method="post">
+<label>Select Flight:</label>
+<select name="flight_id">
+<option th:each="f : ${flights}"
+        th:value="${f.flight_id}"
+        th:text="${f.origin} + ' to ' + ${f.destination} + ' (' + ${f.departure_time} + ')'">
+</option>
+</select>
+
+<label>Departure Date:</label>
+<input type="date" name="departure_date" required>
+
+<label>Number of Passengers:</label>
+<input type="number" name="no_of_passengers" min="1" max="9" required>
+
+<input type="hidden" name="booking_date" th:value="${#dates.createNow()}">
+<input type="hidden" name="status" value="Pending">
+
+<button type="submit">Book Reservation</button>
+</form>
+</div>
+
+</div>
+
+</body>
+</html>

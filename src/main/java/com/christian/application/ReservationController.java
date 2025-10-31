@@ -2,6 +2,7 @@ package com.christian.application;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,13 +25,21 @@ public class ReservationController {
 	
 	//Reservation Page
 	@GetMapping("/reservation")
-	public String reservation(HttpSession session, Model m) {
+	public String reservation(@RequestParam String airline, HttpSession session, Model m) {
 		Passenger p = (Passenger) session.getAttribute("passenger");
 		
 		if(p == null)
 			return "redirect:/signin";
 		
 		m.addAttribute("passenger", p);
+		
+		if(airline != null) {
+			List<Flight> flights = flightRepository.findByAirline(airline);
+			m.addAttribute("flights", flights);
+		}
+		
+		List<String> airlines = flightRepository.findDistinctAirline();
+		m.addAttribute("airlines", airlines);
 		return "reservation";
 	}
 	
@@ -152,7 +161,7 @@ public class ReservationController {
 	(
 			@RequestParam String cardNumber,
 			@RequestParam String cardholderName,
-			@RequestParam LocalDate expiryDate,
+			@RequestParam String expiryDate,
 			@RequestParam String cvv,
 			@RequestParam String paymentMethod,
 			Model m,
