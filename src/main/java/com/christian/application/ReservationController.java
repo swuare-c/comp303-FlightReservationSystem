@@ -210,4 +210,17 @@ public class ReservationController {
 		m.addAttribute("reservation", r);
 		return "checkout";
 	}
+	
+	@GetMapping("/paymentconfirmation")
+	public String paymentconfirmation(HttpSession session, Model m) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		if(p == null)
+			return "redirect:/signin";
+		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
+		Flight f = r.getActualFlight();
+		
+		m.addAttribute("flight", f);
+		m.addAttribute("reservation", r);
+		return "paymentconfirmation";
+	}
 }
