@@ -3,6 +3,7 @@ package com.christian.application;
 import java.time.LocalTime;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +30,7 @@ public class Flight {
 	@NotBlank(message="Select Destination")
 	private String destination;
 	private double price;
-	@OneToMany(mappedBy="flight")
+	@OneToMany(mappedBy="flight", cascade=CascadeType.ALL)
 	private List<Reservation> reservations;
 	
 	

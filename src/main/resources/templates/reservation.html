@@ -6,43 +6,59 @@
 </head>
 <body>
 <div>
-<h2>Book Flight</h2>
-<form th:action="@{/reservation}" method="get">
-<label>Select Airline:</label>
-<select name="airline">
-<option th:each="airline : ${airlines}"
-		th:value="${airline}"
-		th:text="${airline}"
-		th:selected="${airline == param.airline}">
-		</option>
-</select>
-<button type="submit">Show Flights</button>
-</form>
+    <h2>Book Flight</h2>
 
-<div th:if="${flights}">
-<form th:action="@{/reservation}" method="post">
-<label>Select Flight:</label>
-<select name="flight_id">
-<option th:each="f : ${flights}"
-        th:value="${f.flight_id}"
-        th:text="${f.origin} + ' to ' + ${f.destination} + ' (' + ${f.departure_time} + ')'">
-</option>
-</select>
+    <!-- Step 1: Select Airline -->
+    <form th:action="@{/reservation}" method="get">
+        <label>Select Airline:</label>
+        <select name="airline">
+            <option value="Air Canada" th:selected="${param.airline == 'Air Canada'}">Air Canada</option>
+            <option value="American Airlines" th:selected="${param.airline == 'American Airlines'}">American Airlines</option>
+            <option value="Air Transat" th:selected="${param.airline == 'Air Transat'}">Air Transat</option>
+            <option value="WestJet" th:selected="${param.airline == 'WestJet'}">WestJet</option>
+            <option value="Jet Blue" th:selected="${param.airline == 'Jet Blue'}">Jet Blue</option>
+            <option value="Virgin Atlantic" th:selected="${param.airline == 'Virgin Atlantic'}">Virgin Atlantic</option>
+        </select>
+        <button type="submit">Continue</button>
+    </form>
 
-<label>Departure Date:</label>
-<input type="date" name="departure_date" required>
+    <!-- Step 2: Flight + Reservation Form -->
+    <div th:if="${param.airline}">
+        <form th:action="@{/reservation}" method="post">
 
-<label>Number of Passengers:</label>
-<input type="number" name="no_of_passengers" min="1" max="9" required>
+            <h3>Enter Flight and Reservation Details</h3>
 
-<input type="hidden" name="booking_date" th:value="${#dates.createNow()}">
-<input type="hidden" name="status" value="Pending">
+            <!-- Flight Fields -->
+            <label>Airline:</label>
+            <input type="text" name="airline" th:value="${param.airline}" readonly>
 
-<button type="submit">Book Reservation</button>
-</form>
+            <label>Origin:</label>
+            <input type="text" name="origin" placeholder="Enter origin" required>
+
+            <label>Destination:</label>
+            <input type="text" name="destination" placeholder="Enter destination" required>
+
+            <label>Departure Time:</label>
+            <input type="time" name="departureTime" required>
+
+            <label>Arrival Time:</label>
+            <input type="time" name="arrivalTime" required>
+
+            <!-- Reservation Fields -->
+            <label>Departure Date:</label>
+            <input type="date" name="departureDate" required>
+
+            <label>Number of Passengers:</label>
+            <input type="number" id="no_of_passengers" name="no_of_passengers" min="1" max="9" required>
+            
+            <!-- Hidden fields -->
+            <input type="hidden" name="booking_date">
+            <input type="hidden" name="status">
+            <input type="hidden" name="total_price">
+            <input type="hidden" name="price">
+            <input type="hidden" name="reservation_id">
+
+            <button type="submit">Book Flight</button>
+        </form>
+    </div>
 </div>
-
-</div>
-
-</body>
-</html>

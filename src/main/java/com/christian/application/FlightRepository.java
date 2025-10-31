@@ -8,6 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 public interface FlightRepository extends CrudRepository<Flight, Integer> {
 	List<Flight> findByAirline(String airline);
 	
-	@Query("select distinct f.airline_name from flight f")
+	@Query("select distinct f.airline from Flight f")
 	List<String> findDistinctAirline();
 }

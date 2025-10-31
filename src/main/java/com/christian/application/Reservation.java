@@ -2,6 +2,7 @@ package com.christian.application;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,8 +12,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="reservation")
@@ -23,25 +25,24 @@ public class Reservation {
 	@ManyToOne
 	@JoinColumn(name = "flight_id")
 	private Flight flight;
-	@NotNull(message="Select Booking Date")
-	@Future
 	private LocalDate booking_date;
 	@NotNull(message="Select Departure Date")
 	@Future
 	private LocalDate departure_date;
 	@NotNull(message="Enter Number of Passengers")
-	@Size(max=9)
+	@Min(1)
+	@Max(9)
 	private int no_of_passengers;
 	private double total_price;
 	private String status;
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "passenger_id")
 	private Passenger passenger;
 	
 	public Reservation(int reservation_id, Passenger passenger, Flight flight,
 			@NotNull(message = "Select Booking Date") @Future LocalDate booking_date,
 			@NotNull(message = "Select Departure Date") @Future LocalDate departure_date,
-			@NotNull(message = "Enter Number of Passengers") @Size(max = 9) int no_of_passengers, double total_price,
+			@NotNull(message = "Enter Number of Passengers") int no_of_passengers, double total_price,
 			String status) {
 		super();
 		this.reservation_id = reservation_id;

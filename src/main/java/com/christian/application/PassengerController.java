@@ -51,12 +51,12 @@ public class PassengerController {
 	}
 	
 	//Sign In
-	@GetMapping("/login")
+	@PostMapping("/login")
 	public String login(@RequestParam String email, @RequestParam String password, HttpSession session) {
 		Passenger passenger = passRepository.findByEmailIgnoreCase(email);
 		if(passenger != null && passenger.getPassword().equals(password)) {
 			session.setAttribute("passenger", passenger);
-			return "redirect:/reservation";
+			return "reservation";
 		}
 		else {
 			return "signin";

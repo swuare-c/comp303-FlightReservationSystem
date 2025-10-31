@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +26,7 @@ public class ReservationController {
 	
 	//Reservation Page
 	@GetMapping("/reservation")
-	public String reservation(@RequestParam String airline, HttpSession session, Model m) {
+	public String reservation(@RequestParam(required = false) String airline, HttpSession session, Model m) {
 		Passenger p = (Passenger) session.getAttribute("passenger");
 		
 		if(p == null)
@@ -44,40 +45,51 @@ public class ReservationController {
 	}
 	
 	//Creating a Reservation
-	@PostMapping("/reservation")
-	public String bookReservation
-	(
-			@RequestParam int reservation_id,
-			@RequestParam int flight_id,
-			@RequestParam LocalDate booking_date,
-			@RequestParam LocalDate departure_date,
-			@RequestParam int no_of_passengers,
-			@RequestParam double total_price,
-			@RequestParam String status,
-			@RequestParam String airline_name,
-			@RequestParam LocalTime departure_time,
-			@RequestParam LocalTime arrival_time,
-			@RequestParam String origin,
-			@RequestParam String destination,
-			@RequestParam double price,
-			Model m,
-			HttpSession session
-			) {
-		Flight flight = flightRepository.findById(flight_id).orElse(null);
-		
-		Passenger passenger = (Passenger) session.getAttribute("passenger");
-		
-		Reservation reservation = new Reservation(reservation_id, passenger, flight, booking_date, departure_date, no_of_passengers, total_price, status);
-		passenger.setReservation(reservation);
-		reservationRepository.save(reservation);
-		passengerRepository.save(passenger);
-		
-		m.addAttribute("reservation",reservation);
-		m.addAttribute("flight", flight);
-		m.addAttribute("passenger", passenger);
-		
-		return "redirect:/checkout";
-	}
+	 @PostMapping("/reservation")
+	    public String createReservation(
+	            @RequestParam String airline,
+	            @RequestParam String origin,
+	            @RequestParam String destination,
+	            @RequestParam String departureDate,
+	            @RequestParam String departureTime,
+	            @RequestParam String arrivalTime,
+	            @RequestParam int no_of_passengers,
+	            HttpSession session,
+	            Model m) {
+
+	        Passenger p = (Passenger) session.getAttribute("passenger");
+	        if (p == null)
+	            return "redirect:/signin";
+	        
+	        Reservation existing = reservationRepository.findByPassenger(p);
+	        if(existing != null)
+	        	reservationRepository.delete(existing);
+
+	        Flight flight = new Flight();
+	        flight.setAirline(airline);
+	        flight.setOrigin(origin);
+	        flight.setDestination(destination);
+	        flight.setDeparture_time(LocalTime.parse(departureTime));
+	        flight.setArrival_time(LocalTime.parse(arrivalTime));
+	        flight.setPrice(no_of_passengers * 150);
+
+	        Reservation reservation = new Reservation();
+	        reservation.setPassenger(p);
+	        reservation.setFlight(flight);
+	        reservation.setBooking_date(LocalDate.now());
+	        reservation.setDeparture_date(LocalDate.parse(departureDate));
+	        reservation.setNo_of_passengers(no_of_passengers);
+	        reservation.setTotal_price(flight.getPrice() + 50);
+	        reservation.setStatus("Pending");
+	        p.setReservation(reservation);
+	        
+	        reservationRepository.save(reservation);
+	        flightRepository.save(flight);
+	        passengerRepository.save(p);
+	        session.setAttribute("reservation", reservation);
+
+	        return "redirect:/checkout";
+	    }
 	
 	//Update Reservation Page
 	@GetMapping("/reservationupdate")
@@ -100,6 +112,7 @@ public class ReservationController {
 			Model m,
 			HttpSession session) {
 		Passenger p = (Passenger) session.getAttribute("passenger");
+		
 		
 		Reservation r = reservationRepository.findById(reservation_id).orElse(null);
 		if(r != null && r.getPassenger().getPassenger_id() == p.getPassenger_id()) {
@@ -184,6 +197,6 @@ public class ReservationController {
 		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
 
 		m.addAttribute("reservation", r);
-		return "paymentconfirmation";
+		return "checkout";
 	}
 }
