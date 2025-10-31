@@ -20,18 +20,18 @@ public class Flight {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int flight_id;
 	@NotBlank(message="Must Select Airline")
-	private String airline;
+	public String airline;
 	@NotNull(message="Select Departure Time")
-	private LocalTime departure_time;
+	public LocalTime departure_time;
 	@NotNull(message="Select Arrival Time")
-	private LocalTime arrival_time;
+	public LocalTime arrival_time;
 	@NotBlank(message="Select Origin")
-	private String origin;
+	public String origin;
 	@NotBlank(message="Select Destination")
-	private String destination;
-	private double price;
-	@OneToMany(mappedBy="flight", cascade=CascadeType.ALL)
-	private List<Reservation> reservations;
+	public String destination;
+	public double price;
+	@OneToMany(mappedBy="flight", cascade=CascadeType.PERSIST)
+	public List<Reservation> reservations;
 	
 	
 	

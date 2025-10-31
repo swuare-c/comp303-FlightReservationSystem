@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -62,9 +60,11 @@ public class ReservationController {
 	            return "redirect:/signin";
 	        
 	        Reservation existing = reservationRepository.findByPassenger(p);
-	        if(existing != null)
+	        if(existing != null) {
 	        	reservationRepository.delete(existing);
-
+	        	reservationRepository.flush();
+	        }
+	        	
 	        Flight flight = new Flight();
 	        flight.setAirline(airline);
 	        flight.setOrigin(origin);
@@ -84,9 +84,9 @@ public class ReservationController {
 	        reservation.setTotal_price(flight.getPrice() + 50);
 	        reservation.setStatus("Pending");
 	        p.setReservation(reservation);
-	        
-	        reservationRepository.save(reservation);
+
 	        flightRepository.save(flight);
+	        reservationRepository.save(reservation);
 	        passengerRepository.save(p);
 	        session.setAttribute("reservation", reservation);
 
@@ -187,6 +187,10 @@ public class ReservationController {
 			return "redirect:/signin";
 		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
 		r.setStatus("Booked");
+		Flight f = r.getActualFlight();
+
+		m.addAttribute("flight", f);
+		m.addAttribute("reservation", r);
 		reservationRepository.save(r);
 		return "redirect:/paymentconfirmation";
 	}
@@ -197,7 +201,9 @@ public class ReservationController {
 		if(p == null)
 			return "redirect:/signin";
 		Reservation r = reservationRepository.findById(p.getReservation().getReservation_id()).orElse(null);
+		Flight f = r.getActualFlight();
 
+		m.addAttribute("flight", f);
 		m.addAttribute("reservation", r);
 		return "checkout";
 	}

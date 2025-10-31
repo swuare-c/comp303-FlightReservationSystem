@@ -10,8 +10,8 @@
 
 <h3>Flight:</h3>
 <p>
-<span th:text="${reservation.flight.origin}"></span>
-<span th:text="${reservation.flight.destination}"></span>
+<span th:text="${flight.origin}"></span>
+<span th:text="${flight.destination}"></span>
 </p>
 
 <p>
@@ -20,7 +20,7 @@
 <span th:text="${reservation.total_price}"></span>
 </p>
 
-<form th:action="@{/payment/confirm}" method="post">
+<form th:action="@{/paymentconfirmation}" method="post">
 
 <label>Payment Method:</label>
         <select name="paymentMethod" required>

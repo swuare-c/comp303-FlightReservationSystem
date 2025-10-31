@@ -24,7 +24,7 @@ public class Reservation {
 	private int reservation_id;
 	@ManyToOne
 	@JoinColumn(name = "flight_id")
-	private Flight flight;
+	public Flight flight;
 	private LocalDate booking_date;
 	@NotNull(message="Select Departure Date")
 	@Future
@@ -35,7 +35,7 @@ public class Reservation {
 	private int no_of_passengers;
 	private double total_price;
 	private String status;
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "passenger_id")
 	private Passenger passenger;
 	
@@ -76,6 +76,10 @@ public class Reservation {
 
 	public int getFlight() {
 		return this.flight.getFlight_id();
+	}
+	
+	public Flight getActualFlight() {
+		return this.flight;
 	}
 
 	public void setFlight_id(int flight_id) {
