@@ -36,6 +36,13 @@ public class PassengerController {
 		return "signin";
 	}
 	
+	@GetMapping("/home")
+	public String home(Model m, HttpSession session) {
+		Passenger p = (Passenger) session.getAttribute("passenger");
+		m.addAttribute(p);
+		return "home";
+	}
+	
 	//Register user
 	@PostMapping("/register")
 	public String register

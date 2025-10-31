@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
 <meta charset="UTF-8">
 <title>Book Flight</title>
 </head>
@@ -31,21 +32,20 @@
             <h3>Enter Flight and Reservation Details</h3>
 
             <label>Airline:</label>
-            <input type="text" name="airline" th:value="${param.airline}" readonly>
+            <input type="text" name="airline" th:value="${param.airline}" readonly><br><br>
 
             <label>Origin:</label>
             <input type="text" name="origin" placeholder="Enter origin" required>
 
             <label>Destination:</label>
-            <input type="text" name="destination" placeholder="Enter destination" required>
+            <input type="text" name="destination" placeholder="Enter destination" required><br><br>
 
             <label>Departure Time:</label>
             <input type="time" name="departureTime" required>
 
             <label>Arrival Time:</label>
-            <input type="time" name="arrivalTime" required>
+            <input type="time" name="arrivalTime" required><br><br>
 
-            <!-- Reservation Fields -->
             <label>Departure Date:</label>
             <input type="date" name="departureDate" required>
 
@@ -62,4 +62,5 @@
             <button type="submit">Book Flight</button>
         </form>
     </div>
+    <a th:href="@{/home}"><button>Home</button></a>
 </div>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
     <meta charset="UTF-8">
     <title>View Profile</title>
 </head>
@@ -17,8 +18,8 @@
 </div>
 
 <p>
-    <a th:href="@{/edit}">Edit</a> |
-    <a th:href="@{/home}">Home</a>
+    <a th:href="@{/edit}"><button>Edit</button></a> <br>
+    <a th:href="@{/home}"><button>Home</button></a>
 </p>
 </body>
 </html>
