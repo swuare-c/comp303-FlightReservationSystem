@@ -161,7 +161,8 @@ public class ReservationController {
 		
 		if (today.isBefore(departureDate.minusDays(10))) {
 			r.setStatus("Cancelled");
-			reservationRepository.save(r);
+			reservationRepository.deleteById(p.getReservation().getReservation_id());
+			reservationRepository.flush();
 			m.addAttribute("message", "Reservation Cancelled");
 		}
 		else {

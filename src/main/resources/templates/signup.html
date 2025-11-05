@@ -17,31 +17,31 @@
 <input type="hidden" th:field="*{passenger_id}">
 
 <label for="firstname">First Name</label>
-<input type="text" th:field="*{firstname}" id="firstname">
+<input type="text" th:field="*{firstname}" id="firstname" required>
 <span th:if="${#fields.hasErrors('firstname')}" th:errors="*firstname"></span><br><br>
 
 <label for="lastname">Last Name</label>
-<input type="text" th:field="*{lastname}" id="lastname">
+<input type="text" th:field="*{lastname}" id="lastname" required>
 <span th:if="${#fields.hasErrors('lastname')}" th:errors="*lastname"></span><br><br>
 
 <label for="email">Email</label>
-<input type="email" th:field="*{email}" id="email">
+<input type="email" th:field="*{email}" id="email" required>
 <span th:if="${#fields.hasErrors('email')}" th:errors="*email"></span><br><br>
 
 <label for="password">Password</label>
-<input type="password" th:field="*{password}" id="password">
+<input type="password" th:field="*{password}" id="password" required>
 <span th:if="${#fields.hasErrors('password')}" th:errors="*password"></span><br><br>
 
 <label for="address">Address</label>
-<input type="text" th:field="*{address}" id="address">
+<input type="text" th:field="*{address}" id="address" required>
 <span th:if="${#fields.hasErrors('address')}" th:errors="*address"></span><br><br>
 
 <label for="city">City</label>
-<input type="text" th:field="*{city}" id="city">
+<input type="text" th:field="*{city}" id="city" required>
 <span th:if="${#fields.hasErrors('city')}" th:errors="*city"></span><br><br>
 
 <label for="postalcode">Postal Code</label>
-<input type="text" th:field="*{postalcode}" id="postalcode">
+<input type="text" th:field="*{postalcode}" id="postalcode" required>
 <span th:if="${#fields.hasErrors('postalcode')}" th:errors="*postalcode"></span><br><br>
 
 <button type="submit">Register</button><br><br>
